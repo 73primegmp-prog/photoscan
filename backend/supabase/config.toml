@@ -1,0 +1,20 @@
+# Minimal Supabase CLI config for the PHOTOSCAN backend.
+# Full reference: https://supabase.com/docs/guides/cli/config
+project_id = "photoscan"
+
+[auth]
+# Guest checkout: shoppers are signed in anonymously so uploads/orders scope by uid.
+# On the hosted project, also toggle this ON in the Dashboard (see DEPLOY.md, Phase C).
+enable_anonymous_sign_ins = true
+
+[functions.create-order]
+# The storefront calls this with the shopper's anon JWT; we verify it inside.
+verify_jwt = true
+
+[functions.submit-b2b-lead]
+# Public marketing form — no login required.
+verify_jwt = false
+
+[functions.recover-carts]
+# Called only by pg_cron with the service-role bearer; we check it in code.
+verify_jwt = false
