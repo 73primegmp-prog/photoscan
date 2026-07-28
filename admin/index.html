@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PHOTOSCAN · Production Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FCFAF6; --cream:#F5EFE4; --beige:#ECE3D2; --sand:#E2D5BF;
+  --ink:#2A2624; --ink-2:#6B6157; --ink-3:#A79C8E;
+  --line:rgba(42,38,36,.10); --line-2:rgba(42,38,36,.16);
+  --grad:linear-gradient(118deg,#F27A2E,#EA3A4E,#E11B6B);
+  --ok:#1f9d5b; --warn:#B0863F; --stop:#C4443B; --info:#3A6EA5;
+  --shadow:0 1px 2px rgba(42,38,36,.06),0 8px 30px rgba(42,38,36,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cream);color:var(--ink);font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;margin:0}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;font-size:14px}
+.mono{font-family:"Space Mono",ui-monospace,monospace}
+a{color:inherit}
+
+/* ---------- logo ---------- */
+.logo{display:flex;align-items:center;gap:10px}
+.logo .mark{width:30px;height:30px;flex:none}
+.logo .wm{display:flex;flex-direction:column;line-height:1}
+.logo .wm b{font-family:"Hanken Grotesk";font-weight:700;letter-spacing:.12em;font-size:14px}
+.logo .wm span{font-family:"Space Mono";font-size:8.5px;letter-spacing:.22em;color:var(--ink-3);margin-top:3px}
+
+/* ---------- login ---------- */
+.auth{min-height:100dvh;display:grid;place-items:center;padding:24px;
+  background:radial-gradient(120% 80% at 50% -10%,var(--paper),var(--cream))}
+.auth-card{width:100%;max-width:380px;background:var(--paper);border:1px solid var(--line);
+  border-radius:20px;padding:34px 30px;box-shadow:var(--shadow)}
+.auth-card .logo{justify-content:center;margin-bottom:22px}
+.auth-card h1{font-size:23px;text-align:center;margin-bottom:4px}
+.auth-card .sub{text-align:center;color:var(--ink-2);font-size:13.5px;margin-bottom:24px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.field input{width:100%;padding:11px 13px;border:1px solid var(--line-2);border-radius:11px;background:var(--paper);color:var(--ink)}
+.field input:focus{outline:none;border-color:#E1607A;box-shadow:0 0 0 3px rgba(234,58,78,.12)}
+.btn{border:none;border-radius:11px;padding:12px 16px;font-weight:600;font-size:14px}
+.btn-primary{background:var(--grad);color:#fff;width:100%}
+.btn-primary:disabled{opacity:.6;cursor:default}
+.btn-ghost{background:transparent;border:1px solid var(--line-2);color:var(--ink)}
+.err{background:rgba(196,68,59,.08);border:1px solid rgba(196,68,59,.25);color:#8f2f28;
+  padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
+.err.show{display:block}
+
+/* ---------- app shell ---------- */
+.hidden{display:none!important}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(252,250,246,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px}
+.topbar .who{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--ink-2)}
+.topbar .who .em{font-family:"Space Mono";font-size:12px}
+.tabs{display:flex;gap:4px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--cream);
+  position:sticky;top:55px;z-index:19;overflow-x:auto}
+.tab{border:none;background:transparent;padding:13px 14px;font-weight:600;font-size:13.5px;color:var(--ink-3);
+  border-bottom:2px solid transparent;white-space:nowrap}
+.tab.active{color:var(--ink);border-bottom-color:#E1607A}
+.wrap{max-width:1120px;margin:0 auto;padding:22px 20px 80px}
+.eyebrow{font-family:"Space Mono";font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ---------- stat cards ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 26px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:16px 16px}
+.stat .k{font-size:12px;color:var(--ink-2);font-weight:600}
+.stat .v{font-family:"Fraunces";font-size:27px;font-weight:600;margin-top:6px;letter-spacing:-.01em}
+.stat .v small{font-size:14px;color:var(--ink-3);font-family:"Space Mono"}
+
+/* ---------- panels & tables ---------- */
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.panel h2{font-size:16px;padding:15px 18px;border-bottom:1px solid var(--line)}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{font-family:"Space Mono";font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);font-weight:700;background:var(--cream)}
+td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.rowlink{cursor:pointer}
+.rowlink:hover{background:var(--cream)}
+.ref{font-family:"Space Mono";font-weight:700;font-size:13px}
+.muted{color:var(--ink-2)}
+.right{text-align:right}
+.amt{font-family:"Space Mono";font-weight:700}
+
+/* status pill + select */
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);background:var(--paper)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.sel{border:1px solid var(--line-2);border-radius:9px;padding:6px 8px;background:var(--paper);color:var(--ink);font-size:12.5px;font-weight:600}
+.sel:focus{outline:none;border-color:#E1607A}
+
+/* expand / production cards */
+.detail{background:var(--cream)}
+.detail-inner{padding:6px 16px 18px}
+.pcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:8px}
+.pcard{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;gap:12px}
+.pcard .ph{width:64px;height:64px;border-radius:9px;flex:none;overflow:hidden;background:var(--beige);
+  display:grid;place-items:center;border:1px solid var(--line)}
+.pcard .ph img{width:100%;height:100%;object-fit:cover}
+.pcard .ph.empty{font-size:10px;color:var(--ink-3);text-align:center;font-family:"Space Mono"}
+.pcard .pn{font-weight:600;font-size:13.5px;line-height:1.25}
+.pcard .pm{font-size:11.5px;color:var(--ink-2);margin-top:3px;font-family:"Space Mono"}
+.pcard .eng{margin-top:7px;font-size:13px;padding:5px 8px;border-radius:8px;background:var(--cream);border:1px dashed var(--line-2)}
+.pcard .eng.serif{font-family:"Fraunces";font-size:15px}
+.pcard .eng.mono{font-family:"Space Mono"}
+.pcard a.dl{font-size:11px;font-family:"Space Mono";color:var(--info);display:inline-block;margin-top:6px}
+
+/* catalog */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.pitem{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px}
+.pitem .nm{font-weight:600;font-size:14px}
+.pitem .sku{font-family:"Space Mono";font-size:11px;color:var(--ink-3);margin-top:2px}
+.pitem .ctl{display:flex;align-items:center;gap:8px;margin-top:11px}
+.pitem .ctl label{font-size:11px;color:var(--ink-2);font-weight:600}
+.pitem .ctl input[type=number]{width:92px;padding:7px 9px;border:1px solid var(--line-2);border-radius:9px;font-family:"Space Mono"}
+.pitem .save{margin-top:10px;font-size:12px;padding:7px 12px}
+.switch{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink-2)}
+
+.empty{padding:44px 20px;text-align:center;color:var(--ink-2)}
+.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+.loading{padding:40px;text-align:center;color:var(--ink-3);font-family:"Space Mono";font-size:13px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:13.5px;font-weight:600;
+  transition:.3s;z-index:60}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:720px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .wrap{padding:18px 14px 70px}
+}
+</style>
+</head>
+<body>
+
+<!-- ======================= LOGIN ======================= -->
+<div id="auth" class="auth">
+  <div class="auth-card">
+    <div class="logo">
+      <svg class="mark" viewBox="0 0 40 40" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#F27A2E"/><stop offset=".5" stop-color="#EA3A4E"/><stop offset="1" stop-color="#E11B6B"/></linearGradient></defs><rect x="1.5" y="1.5" width="37" height="37" rx="11" fill="url(#lg)"/><path d="M20 30.5c-6.4-4.1-9.8-7.6-9.8-11.6a5.3 5.3 0 0 1 9.8-2.8 5.3 5.3 0 0 1 9.8 2.8c0 4-3.4 7.5-9.8 11.6Z" fill="#fff"/></svg>
+      <span class="wm"><b>PHOTOSCAN</b><span>PRODUCTION&nbsp;STUDIO</span></span>
+    </div>
+    <h1>Sign in</h1>
+    <p class="sub">Staff access to orders &amp; enquiries</p>
+    <div id="authErr" class="err"></div>
+    <div class="field"><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="you@yourbusiness.com"></div>
+    <div class="field"><label>Password</label><input id="pw" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+    <button id="loginBtn" class="btn btn-primary">Sign in</button>
+  </div>
+</div>
+
+<!-- ======================= APP ======================= -->
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="logo">
+      <svg class="mark" viewBox="0 0 40 40" fill="none"><rect x="1.5" y="1.5" width="37" height="37" rx="11" fill="url(#lg)"/><path d="M20 30.5c-6.4-4.1-9.8-7.6-9.8-11.6a5.3 5.3 0 0 1 9.8-2.8 5.3 5.3 0 0 1 9.8 2.8c0 4-3.4 7.5-9.8 11.6Z" fill="#fff"/></svg>
+      <span class="wm"><b>PHOTOSCAN</b><span>PRODUCTION&nbsp;STUDIO</span></span>
+    </div>
+    <div class="who"><span class="em" id="whoEm"></span><button class="btn btn-ghost" style="padding:8px 12px;font-size:13px" id="logoutBtn">Sign out</button></div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="orders">Orders</button>
+    <button class="tab" data-tab="leads">Bulk enquiries</button>
+    <button class="tab" data-tab="catalog">Catalog</button>
+  </div>
+  <div class="wrap" id="view"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="../config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ---------- setup ---------- */
+var CFG = window.PHOTOSCAN_CONFIG || {};
+var sb = supabase.createClient(CFG.SUPABASE_URL, CFG.ANON_KEY);
+var DATA = { orders:[], leads:[], products:[] };
+var expanded = {};
+
+var ORDER_STATUSES = ['placed','in_production','proof_shared','shipped','delivered','cancelled'];
+var LEAD_STATUSES  = ['new','contacted','quoted','won','lost'];
+var STATUS_COLOR = { placed:'var(--info)', in_production:'var(--warn)', proof_shared:'#7A57B0',
+  shipped:'#2E8B8B', delivered:'var(--ok)', cancelled:'var(--stop)',
+  new:'var(--info)', contacted:'var(--warn)', quoted:'#7A57B0', won:'var(--ok)', lost:'var(--stop)' };
+
+function inr(n){ return '₹' + (n==null?0:n).toLocaleString('en-IN'); }
+function esc(s){ return (s==null?'':(''+s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function fmtDate(iso){ if(!iso)return '—'; var d=new Date(iso);
+  return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}); }
+function label(s){ return (s||'').replace(/_/g,' ').replace(/\b\w/g,function(m){return m.toUpperCase();}); }
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},2200); }
+
+/* ---------- auth ---------- */
+document.getElementById('loginBtn').onclick = login;
+document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') login(); });
+document.getElementById('logoutBtn').onclick = async function(){ await sb.auth.signOut(); location.reload(); };
+
+async function login(){
+  var err=document.getElementById('authErr'); err.classList.remove('show');
+  var btn=document.getElementById('loginBtn'); btn.disabled=true; btn.textContent='Signing in…';
+  var email=document.getElementById('email').value.trim();
+  var pw=document.getElementById('pw').value;
+  var res=await sb.auth.signInWithPassword({email:email,password:pw});
+  if(res.error){ showErr(err,res.error.message); btn.disabled=false; btn.textContent='Sign in'; return; }
+  var ok=await verifyAdmin();
+  if(!ok){ await sb.auth.signOut(); showErr(err,'This account is not an admin. Ask an owner to add you.'); btn.disabled=false; btn.textContent='Sign in'; return; }
+  enterApp(res.data.user);
+}
+function showErr(el,msg){ el.textContent=msg; el.classList.add('show'); }
+
+async function verifyAdmin(){
+  var r=await sb.from('admins').select('id').limit(1);
+  return !r.error && r.data && r.data.length>0;
+}
+
+async function boot(){
+  var s=await sb.auth.getSession();
+  if(s.data.session){ if(await verifyAdmin()){ enterApp(s.data.session.user); return; } await sb.auth.signOut(); }
+  document.getElementById('auth').classList.remove('hidden');
+}
+function enterApp(user){
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('whoEm').textContent = user.email || 'admin';
+  loadAll();
+}
+
+/* ---------- tabs ---------- */
+var currentTab='overview';
+document.querySelectorAll('.tab').forEach(function(t){
+  t.onclick=function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+    t.classList.add('active'); currentTab=t.dataset.tab; renderView();
+  };
+});
+
+/* ---------- data ---------- */
+async function loadAll(){
+  document.getElementById('view').innerHTML='<div class="loading">Loading your store…</div>';
+  var o=await sb.from('orders').select(
+    'id,human_ref,status,total_inr,subtotal_inr,delivery_inr,savings_inr,contact_email,created_at,'+
+    'order_items(id,name,sku,material,qty,unit_price_inr,line_total_inr,personalizations(custom_text,font_style,image_path))'
+  ).order('created_at',{ascending:false});
+  var l=await sb.from('b2b_leads').select('*').order('created_at',{ascending:false});
+  var p=await sb.from('products').select('id,name,sku,price_inr,mrp_inr,category_id,active').order('category_id');
+  DATA.orders = o.data||[]; DATA.leads = l.data||[]; DATA.products = p.data||[];
+  if(o.error) console.error(o.error);
+  renderView();
+}
+
+/* ---------- render ---------- */
+function renderView(){
+  var v=document.getElementById('view');
+  if(currentTab==='overview') v.innerHTML=overviewHTML();
+  else if(currentTab==='orders') v.innerHTML=ordersHTML();
+  else if(currentTab==='leads') v.innerHTML=leadsHTML();
+  else v.innerHTML=catalogHTML();
+}
+
+function statusSelect(kind,id,current){
+  var opts=(kind==='order'?ORDER_STATUSES:LEAD_STATUSES).map(function(s){
+    return '<option value="'+s+'"'+(s===current?' selected':'')+'>'+label(s)+'</option>';
+  }).join('');
+  return '<select class="sel" onclick="event.stopPropagation()" onchange="'+(kind==='order'?'setOrderStatus':'setLeadStatus')+'(\''+id+'\',this.value)">'+opts+'</select>';
+}
+function pill(s){ return '<span class="pill"><span class="dot" style="background:'+(STATUS_COLOR[s]||'var(--ink-3)')+'"></span>'+label(s)+'</span>'; }
+
+/* overview */
+function overviewHTML(){
+  var today=new Date(); today.setHours(0,0,0,0);
+  var todays=DATA.orders.filter(function(o){return new Date(o.created_at)>=today;});
+  var revToday=todays.reduce(function(s,o){return s+(o.total_inr||0);},0);
+  var open=DATA.orders.filter(function(o){return o.status!=='delivered'&&o.status!=='cancelled';}).length;
+  var newLeads=DATA.leads.filter(function(l){return l.status==='new';}).length;
+  var recent=DATA.orders.slice(0,6);
+  var rows=recent.map(function(o){
+    return '<tr><td class="ref">'+esc(o.human_ref)+'</td><td class="muted">'+fmtDate(o.created_at)+'</td>'+
+      '<td>'+pill(o.status)+'</td><td class="right amt">'+inr(o.total_inr)+'</td></tr>';
+  }).join('') || '<tr><td colspan="4" class="empty">No orders yet.</td></tr>';
+  return '<span class="eyebrow">Today at a glance</span>'+
+    '<div class="stats">'+
+      stat('Orders today', todays.length)+
+      stat('Revenue today', inr(revToday))+
+      stat('Open orders', open)+
+      stat('New enquiries', newLeads)+
+    '</div>'+
+    '<div class="panel"><h2>Latest orders</h2><div class="tablewrap"><table>'+
+      '<thead><tr><th>Order</th><th>Placed</th><th>Status</th><th class="right">Total</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div></div>';
+}
+function stat(k,v){ return '<div class="stat"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'; }
+
+/* orders */
+function ordersHTML(){
+  if(!DATA.orders.length) return emptyPanel('No orders yet','When a customer checks out, their order and personalised artwork appear here.');
+  var rows=DATA.orders.map(function(o){
+    var items=o.order_items||[];
+    var head='<tr class="rowlink" onclick="toggleOrder(\''+o.id+'\')">'+
+      '<td class="ref">'+esc(o.human_ref)+'</td>'+
+      '<td class="muted">'+fmtDate(o.created_at)+'</td>'+
+      '<td class="muted">'+items.length+' item'+(items.length===1?'':'s')+'</td>'+
+      '<td>'+statusSelect('order',o.id,o.status)+'</td>'+
+      '<td class="right amt">'+inr(o.total_inr)+'</td></tr>';
+    var detail = expanded[o.id] ? '<tr class="detail"><td colspan="5"><div class="detail-inner" id="det-'+o.id+'">'+prodCards(items)+'</div></td></tr>' : '';
+    return head+detail;
+  }).join('');
+  return '<span class="eyebrow">'+DATA.orders.length+' orders</span>'+
+    '<div class="panel" style="margin-top:12px"><div class="tablewrap"><table>'+
+    '<thead><tr><th>Order</th><th>Placed</th><th>Items</th><th>Status</th><th class="right">Total</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table></div></div>';
+}
+function prodCards(items){
+  if(!items.length) return '<p class="muted">No line items.</p>';
+  return '<div class="pcards">'+items.map(function(it){
+    var per=(it.personalizations&&it.personalizations[0])||{};
+    var fontCls = per.font_style==='serif'?'serif':(per.font_style==='mono'?'mono':'');
+    var eng = per.custom_text ? '<div class="eng '+fontCls+'">“'+esc(per.custom_text)+'”</div>' : '';
+    var phId = 'ph-'+Math.random().toString(36).slice(2);
+    var ph = per.image_path
+      ? '<div class="ph" id="'+phId+'"><span style="font-size:10px;color:var(--ink-3)">…</span></div>'
+      : '<div class="ph empty">No photo</div>';
+    if(per.image_path) signPhoto(per.image_path, phId);
+    return '<div class="pcard">'+ph+'<div><div class="pn">'+esc(it.name)+'</div>'+
+      '<div class="pm">'+esc(it.sku)+' · '+esc(it.material)+' · ×'+it.qty+'</div>'+eng+'</div></div>';
+  }).join('')+'</div>';
+}
+async function signPhoto(path, elId){
+  try{
+    var r=await sb.storage.from('personalization').createSignedUrl(path, 3600);
+    var el=document.getElementById(elId); if(!el) return;
+    if(r.data&&r.data.signedUrl){
+      el.innerHTML='<a href="'+r.data.signedUrl+'" target="_blank" rel="noopener" title="Open full size"><img src="'+r.data.signedUrl+'" alt="customer photo"></a>';
+    } else {
+      el.className='ph empty'; el.textContent='no access';
+    }
+  }catch(e){ var el2=document.getElementById(elId); if(el2){el2.className='ph empty';el2.textContent='error';} }
+}
+window.toggleOrder=function(id){ expanded[id]=!expanded[id]; renderView(); };
+
+/* leads */
+function leadsHTML(){
+  if(!DATA.leads.length) return emptyPanel('No enquiries yet','Bulk / corporate quote requests from the storefront land here.');
+  var rows=DATA.leads.map(function(l){
+    return '<tr><td><b>'+esc(l.company)+'</b><div class="muted" style="font-size:12px">'+esc(l.contact_name)+'</div></td>'+
+      '<td class="mono" style="font-size:12px">'+esc(l.email)+'</td>'+
+      '<td class="muted">'+esc(l.quantity_band||'—')+'</td>'+
+      '<td class="muted">'+esc(l.occasion||'—')+'</td>'+
+      '<td class="muted">'+fmtDate(l.created_at)+'</td>'+
+      '<td>'+statusSelect('lead',l.id,l.status)+'</td></tr>';
+  }).join('');
+  return '<span class="eyebrow">'+DATA.leads.length+' enquiries</span>'+
+    '<div class="panel" style="margin-top:12px"><div class="tablewrap"><table>'+
+    '<thead><tr><th>Company</th><th>Email</th><th>Quantity</th><th>Occasion</th><th>Received</th><th>Status</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table></div></div>';
+}
+
+/* catalog */
+function catalogHTML(){
+  if(!DATA.products.length) return emptyPanel('No products','Run the seed migration (0004) to load your catalog.');
+  var cards=DATA.products.map(function(p){
+    return '<div class="pitem"><div class="nm">'+esc(p.name)+'</div><div class="sku">'+esc(p.sku)+' · '+esc(p.category_id)+'</div>'+
+      '<div class="ctl"><label>Sale ₹</label><input type="number" id="pr-'+p.id+'" value="'+p.price_inr+'" min="0">'+
+      '<span class="switch"><input type="checkbox" id="ac-'+p.id+'" '+(p.active?'checked':'')+'> Active</span></div>'+
+      '<button class="btn btn-ghost save" onclick="saveProduct(\''+p.id+'\')">Save changes</button></div>';
+  }).join('');
+  return '<span class="eyebrow">'+DATA.products.length+' products</span>'+
+    '<div class="cat-grid" style="margin-top:12px">'+cards+'</div>';
+}
+
+function emptyPanel(t,d){ return '<div class="panel" style="margin-top:12px"><div class="empty"><b>'+t+'</b>'+d+'</div></div>'; }
+
+/* ---------- mutations ---------- */
+window.setOrderStatus=async function(id,val){
+  var r=await sb.from('orders').update({status:val}).eq('id',id);
+  if(r.error){ toast('Could not update'); console.error(r.error); return; }
+  var o=DATA.orders.find(function(x){return x.id===id;}); if(o)o.status=val;
+  toast('Order updated to “'+label(val)+'”');
+};
+window.setLeadStatus=async function(id,val){
+  var r=await sb.from('b2b_leads').update({status:val}).eq('id',id);
+  if(r.error){ toast('Could not update'); console.error(r.error); return; }
+  var l=DATA.leads.find(function(x){return x.id===id;}); if(l)l.status=val;
+  toast('Enquiry marked “'+label(val)+'”');
+};
+window.saveProduct=async function(id){
+  var price=parseInt(document.getElementById('pr-'+id).value,10)||0;
+  var active=document.getElementById('ac-'+id).checked;
+  var r=await sb.from('products').update({price_inr:price,active:active}).eq('id',id);
+  if(r.error){ toast('Could not save'); console.error(r.error); return; }
+  var p=DATA.products.find(function(x){return x.id===id;}); if(p){p.price_inr=price;p.active=active;}
+  toast('Saved '+id);
+};
+
+/* ---------- go ---------- */
+if(!CFG.SUPABASE_URL || !CFG.ANON_KEY || CFG.ANON_KEY.indexOf('PASTE_')===0){
+  document.getElementById('auth').classList.remove('hidden');
+  var e=document.getElementById('authErr'); e.textContent='Add your Supabase URL and anon key to config.js first.'; e.classList.add('show');
+} else {
+  boot();
+}
+</script>
+</body>
+</html>
